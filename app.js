@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const YAML = require('yamljs');
+const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const userRoutes = require('./routes/userRoutes');
 const gymRoutes = require('./routes/gymRoutes');
@@ -8,6 +9,9 @@ const classRoutes = require('./routes/classRoutes');
 
 const app = express();
 app.use(express.json());
+
+// Enable CORS for all routes
+app.use(cors());
 
 const swaggerDocument = YAML.load('./swagger.yaml');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

@@ -1,13 +1,19 @@
 openapi: 3.0.0
 info:
-  title: Gym Management API
+  title: Rhino
+  description: Gym Management API
   version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+  - url: https://fit-go-api.onrender.com/api
+    description: Render development server
 paths:
-  /users:
+  /users/register:
     post:
       summary: Register a new user
       tags:
-        - Users
+        - Registration
       requestBody:
         required: true
         content:
@@ -32,21 +38,60 @@ paths:
                   description: The phone number of the user
                 personalId:
                   type: string
-                  description: The personal ID of the user (e.g., social security number, national ID)
+                  description: >-
+                    The personal ID of the user (e.g., social security number,
+                    national ID)
                 roles:
                   type: array
                   items:
                     type: string
-                  description: The roles the user has (e.g., admin, member)
+                  description: 'The roles the user has (e.g., admin, member)'
       responses:
-        201:
+        '201':
           description: User registered successfully
-        400:
-          description: Bad request (e.g., missing or invalid fields)
-        500:
+        '400':
+          description: 'Bad request (e.g., missing or invalid fields)'
+        '500':
           description: Internal server error
-
-  /auth/login:
+  get:
+    summary: Retrieve a list of all users
+    tags:
+      - Users
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: token
+        in: header
+        required: true
+        description: The JWT token for the authenticated user
+        schema:
+          type: string
+    responses:
+      '200':
+        description: List of users retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The unique ID of the user
+                  email:
+                    type: string
+                    description: The email address of the user
+                  name:
+                    type: string
+                    description: The full name of the user
+      '400':
+        description: 'Bad request (e.g., missing or invalid fields)'
+      '401':
+        description: 'Unauthorized (e.g., invalid token)'
+      '500':
+        description: Internal server error
+  /users/login:
     post:
       summary: Authenticate and login a user
       tags:
@@ -65,7 +110,7 @@ paths:
                   type: string
                   description: The password for the user
       responses:
-        200:
+        '200':
           description: User authenticated successfully
           content:
             application/json:
@@ -75,13 +120,12 @@ paths:
                   token:
                     type: string
                     description: The JWT token for the authenticated user
-        400:
-          description: Bad request (e.g., missing or invalid fields)
-        401:
-          description: Unauthorized (e.g., invalid email or password)
-        500:
+        '400':
+          description: 'Bad request (e.g., missing or invalid fields)'
+        '401':
+          description: 'Unauthorized (e.g., invalid email or password)'
+        '500':
           description: Internal server error
-
   /gyms:
     post:
       summary: Create a new gym
@@ -137,19 +181,25 @@ paths:
                         type: array
                         items:
                           type: string
-                        description: An array of class IDs included in the membership option
+                        description: >-
+                          An array of class IDs included in the membership
+                          option
                       weekly:
                         type: integer
-                        description: The weekly limit of classes the user can attend with this membership option
+                        description: >-
+                          The weekly limit of classes the user can attend with
+                          this membership option
                       monthly:
                         type: integer
-                        description: The monthly limit of classes the user can attend with this membership option
+                        description: >-
+                          The monthly limit of classes the user can attend with
+                          this membership option
       responses:
-        201:
+        '201':
           description: Gym created successfully
-        400:
-          description: Bad request (e.g., missing or invalid fields)
-        500:
+        '400':
+          description: 'Bad request (e.g., missing or invalid fields)'
+        '500':
           description: Internal server error
     get:
       summary: Retrieve all gyms
@@ -158,7 +208,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        200:
+        '200':
           description: Gyms retrieved successfully
           content:
             application/json:
@@ -166,9 +216,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Gym'
-        500:
+        '500':
           description: Internal server error
-  /gyms/{id}:
+  '/gyms/{id}':
     get:
       summary: Retrieve a specific gym
       tags:
@@ -183,15 +233,15 @@ paths:
           required: true
           description: The ID of the gym to retrieve
       responses:
-        200:
+        '200':
           description: Gym retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Gym'
-        404:
+        '404':
           description: Gym not found
-        500:
+        '500':
           description: Internal server error
     put:
       summary: Update a specific gym
@@ -254,23 +304,29 @@ paths:
                         type: array
                         items:
                           type: string
-                        description: An array of class IDs included in the membership option
+                        description: >-
+                          An array of class IDs included in the membership
+                          option
                       weekly:
                         type: integer
-                        description: The weekly limit of classes the user can attend with this membership option
+                        description: >-
+                          The weekly limit of classes the user can attend with
+                          this membership option
                       monthly:
                         type: integer
-                        description: The monthly limit of classes the user can attend with this membership option
+                        description: >-
+                          The monthly limit of classes the user can attend with
+                          this membership option
       responses:
-        200:
+        '200':
           description: Gym updated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Gym'
-        404:
+        '404':
           description: Gym not found
-        500:
+        '500':
           description: Internal server error
     delete:
       summary: Delete a specific gym
@@ -286,11 +342,11 @@ paths:
           required: true
           description: The ID of the gym to delete
       responses:
-        200:
+        '200':
           description: Gym deleted successfully
-        404:
+        '404':
           description: Gym not found
-        500:
+        '500':
           description: Internal server error
   /subscriptions:
     post:
@@ -327,11 +383,11 @@ paths:
                   format: date
                   description: The end date of the subscription
       responses:
-        201:
+        '201':
           description: Subscription created successfully
-        400:
-          description: Bad request (e.g., missing or invalid fields)
-        500:
+        '400':
+          description: 'Bad request (e.g., missing or invalid fields)'
+        '500':
           description: Internal server error
     get:
       summary: Retrieve all subscriptions
@@ -340,7 +396,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        200:
+        '200':
           description: Subscriptions retrieved successfully
           content:
             application/json:
@@ -348,9 +404,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Subscription'
-        500:
+        '500':
           description: Internal server error
-  /subscriptions/{id}:
+  '/subscriptions/{id}':
     get:
       summary: Retrieve a specific subscription
       tags:
@@ -365,15 +421,15 @@ paths:
           required: true
           description: The ID of the subscription to retrieve
       responses:
-        200:
+        '200':
           description: Subscription retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Subscription'
-        404:
+        '404':
           description: Subscription not found
-        500:
+        '500':
           description: Internal server error
     put:
       summary: Update a specific subscription
@@ -406,7 +462,6 @@ paths:
                   description: The ID of the membership option for this subscription
                 total:
                   type: number
-                  description:
                   description: The total amount paid for this subscription
                 startDate:
                   type: string
@@ -417,15 +472,15 @@ paths:
                   format: date
                   description: The end date of the subscription
       responses:
-        200:
+        '200':
           description: Subscription updated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Subscription'
-        404:
+        '404':
           description: Subscription not found
-        500:
+        '500':
           description: Internal server error
     delete:
       summary: Delete a specific subscription
@@ -441,14 +496,133 @@ paths:
           required: true
           description: The ID of the subscription to delete
       responses:
-        200:
+        '200':
           description: Subscription deleted successfully
-        404:
+        '404':
           description: Subscription not found
-        500:
+        '500':
+          description: Internal server error
+  /classes:
+    get:
+      summary: Retrieve all classes
+      tags:
+        - Classes
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Classes retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Class'
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new class
+      tags:
+        - Classes
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Class'
+      responses:
+        '201':
+          description: Class created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class'
+        '500':
+          description: Internal server error
+  '/classes/{id}':
+    get:
+      summary: Retrieve a specific class
+      tags:
+        - Classes
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the class to retrieve
+      responses:
+        '200':
+          description: Class retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class'
+        '404':
+          description: Class not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update a specific class
+      tags:
+        - Classes
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the class to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Class'
+      responses:
+        '200':
+          description: Class updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class'
+        '404':
+          description: Class not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete a specific class
+      tags:
+        - Classes
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the class to delete
+      responses:
+        '200':
+          description: Class deleted successfully
+        '404':
+          description: Class not found
+        '500':
           description: Internal server error
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     User:
       type: object
@@ -470,12 +644,14 @@ components:
           description: The phone number of the user
         personalId:
           type: string
-          description: The personal ID of the user (e.g., social security number, national ID)
+          description: >-
+            The personal ID of the user (e.g., social security number, national
+            ID)
         roles:
           type: array
           items:
             type: string
-          description: The roles the user has (e.g., admin, member)
+          description: 'The roles the user has (e.g., admin, member)'
     Gym:
       type: object
       properties:
@@ -526,10 +702,14 @@ components:
                 description: An array of class IDs included in the membership option
               weekly:
                 type: integer
-                description: The weekly limit of classes the user can attend with this membership option
+                description: >-
+                  The weekly limit of classes the user can attend with this
+                  membership option
               monthly:
                 type: integer
-                description: The monthly limit of classes the user can attend with this membership option
+                description: >-
+                  The monthly limit of classes the user can attend with this
+                  membership option
     Subscription:
       type: object
       properties:
@@ -540,7 +720,6 @@ components:
           type: string
           description: The ID of the user this subscription belongs to
         gymId:
-          type:
           type: string
           description: The ID of the gym this subscription is for
         optionId:
@@ -587,10 +766,4 @@ components:
           type: array
           items:
             type: string
-          description: An array of user IDs representing the class attendees
-
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+            description: An array of user IDs representing the class attendees
