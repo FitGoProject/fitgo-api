@@ -1,13 +1,20 @@
 const userService = require('../services/userService');
+const ValidationError = require('../errors/validationError');
+
 
 exports.register = async (req, res) => {
   try {
     const user = await userService.register(req.body);
     res.status(201).json(user);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (error instanceof ValidationError) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
   }
 };
+
 
 exports.login = async (req, res) => {
   try {
@@ -15,7 +22,7 @@ exports.login = async (req, res) => {
     const { user, token } = await userService.login(email, password);
     res.status(200).json({ user, token });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
 
