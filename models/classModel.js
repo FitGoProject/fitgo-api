@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 
 const classSchema = new Schema({
   gymId: {
@@ -17,6 +16,6 @@ const classSchema = new Schema({
   }
 }, { timestamps: true });
 
-const Class = mongoose.model('Class', classSchema);
+const Class = model('Class', classSchema);
 
 module.exports = Class;

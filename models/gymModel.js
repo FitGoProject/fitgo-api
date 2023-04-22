@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 
 const locationSchema = new Schema({
   latitude: { type: Number, required: true },
@@ -30,4 +29,4 @@ const gymSchema = new Schema({
   ],
 });
 
-module.exports = mongoose.model('Gym', gymSchema);
+module.exports = model('Gym', gymSchema);

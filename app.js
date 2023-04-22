@@ -6,7 +6,6 @@ const swaggerUi = require('swagger-ui-express');
 const userRoutes = require('./routes/userRoutes');
 const gymRoutes = require('./routes/gymRoutes');
 const classRoutes = require('./routes/classRoutes');
-const optionModel = require('./models/optionModel');
 const subscriptionRoutes = require('./routes/subscriptionRoutes');
 
 console.log('Starting app.js');
@@ -24,7 +23,6 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 app.use('/api/users', userRoutes);
 app.use('/api/gyms', gymRoutes);
 app.use('/api/classes', classRoutes);
-console.log('Registering /api/subscriptions route');
 app.use('/api/subscriptions', subscriptionRoutes);
 
 app.listen(process.env.PORT, () => {
