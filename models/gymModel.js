@@ -16,17 +16,7 @@ const gymSchema = new Schema({
   name: { type: String, required: true },
   location: { type: locationSchema, required: true },
   members: [memberSchema],
-  options: [
-    {
-      name: { type: String, required: true },
-      description: { type: String, required: true },
-      months: { type: Number },
-      price: { type: Number },
-      classes: [{ type: Schema.Types.ObjectId, ref: 'Class' }],
-      weekly: { type: Number },
-      monthly: { type: Number },
-    },
-  ],
+  options: [{ type: Schema.Types.ObjectId, ref: 'Option' }]
 });
 
 module.exports = model('Gym', gymSchema);

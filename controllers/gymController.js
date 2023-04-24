@@ -1,4 +1,5 @@
 const gymService = require('../services/gymService');
+const optionService = require('../services/optionService');
 
 exports.createGym = async (req, res) => {
   try {
@@ -55,6 +56,77 @@ exports.deleteGym = async (req, res) => {
     }
 
     res.status(200).json({ message: 'Gym deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Options
+exports.createOption = async (req, res) => {
+  try {
+    const option = await optionService.createOption(req.params.id, req.body);
+
+    if (!option) {
+      return res.status(404).json({ error: 'Gym not found' });
+    }
+
+    res.status(201).json(option);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getOptions = async (req, res) => {
+  try {
+    const options = await optionService.getOptions(req.params.id);
+
+    if (!options) {
+      return res.status(404).json({ error: 'Gym not found' });
+    }
+
+    res.status(200).json(options);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getOption = async (req, res) => {
+  try {
+    const option = await optionService.getOption(req.params.id, req.params.optionId);
+
+    if (!option) {
+      return res.status(404).json({ error: 'Option not found' });
+    }
+
+    res.status(200).json(option);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.updateOption = async (req, res) => {
+  try {
+    const option = await optionService.updateOption(req.params.optionId, req.body);
+
+    if (!option) {
+      return res.status(404).json({ error: 'Option not found' });
+    }
+
+    res.status(200).json(option);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.deleteOption = async (req, res) => {
+  try {
+    const option = await optionService.deleteOption(req.params.id, req.params.optionId);
+
+    if (!option) {
+      return res.status(404).json({ error: 'Option not found' });
+    }
+
+    res.status(200).json({ message: 'Option deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

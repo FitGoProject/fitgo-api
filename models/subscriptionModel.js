@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 
 const subscriptionSchema = new Schema({
   userId: {
@@ -31,4 +30,4 @@ const subscriptionSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Subscription', subscriptionSchema);
+module.exports = model('Subscription', subscriptionSchema);
