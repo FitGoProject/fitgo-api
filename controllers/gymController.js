@@ -12,8 +12,8 @@ exports.createGym = async (req, res) => {
 
 exports.getAllGyms = async (req, res) => {
   try {
-    const gyms = await gymService.getAllGyms();
-    res.status(200).json(gyms);
+    const result = await gymService.getAllGyms(req.query);
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
