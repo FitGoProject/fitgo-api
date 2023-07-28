@@ -207,15 +207,40 @@ paths:
         - Gyms
       security:
         - bearerAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: Partial or full name of the gym to search
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Page number for pagination
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Number of records per page
       responses:
         '200':
           description: Gyms retrieved successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Gym'
+                type: object
+                properties:
+                  totalGyms:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  currentPage:
+                    type: integer
+                  gyms:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Gym'
         '500':
           description: Internal server error
   '/gyms/{id}':
@@ -348,6 +373,153 @@ paths:
           description: Gym not found
         '500':
           description: Internal server error
+  /gyms/{gymId}/options:
+    post:
+      summary: Create a new option for a gym
+      tags:
+        - Gyms
+      parameters:
+        - name: gymId
+          in: path
+          required: true
+          description: The ID of the gym
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the option
+                description:
+                  type: string
+                  description: The description of the option
+                price:
+                  type: number
+                  description: The price of the option
+                duration:
+                  type: number
+                  description: The duration of the option in days
+      responses:
+        '201':
+          description: Option created successfully
+        '404':
+          description: Gym not found
+        '500':
+          description: Internal server error
+    get:
+      summary: Get all options for a gym
+      tags:
+        - Gyms
+      parameters:
+        - name: gymId
+          in: path
+          required: true
+          description: The ID of the gym
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of options retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Option'
+        '404':
+          description: Gym not found
+        '500':
+          description: Internal server error
+
+  /gyms/{gymId}/options/{optionId}:
+    get:
+      summary: Get a specific option for a gym
+      tags:
+        - Gyms
+      parameters:
+        - name: gymId
+          in: path
+          required: true
+          description: The ID of the gym
+          schema:
+            type: string
+        - name: optionId
+          in: path
+          required: true
+          description: The ID of the option
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Option retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Option'
+        '404':
+          description: Option not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update a specific option for a gym
+      tags:
+        - Gyms
+      parameters:
+        - name: gymId
+          in: path
+          required: true
+          description: The ID of the gym
+          schema:
+            type: string
+        - name: optionId
+          in: path
+          required: true
+          description: The ID of the option
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Option'
+      responses:
+        '200':
+          description: Option updated successfully
+        '404':
+          description: Option not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete a specific option for a gym
+      tags:
+        - Gyms
+      parameters:
+        - name: gymId
+          in: path
+          required: true
+          description: The ID of the gym
+          schema:
+            type: string
+        - name: optionId
+          in: path
+          required: true
+          description: The ID of the option
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Option deleted successfully
+        '404':
+          description: Option not found
+        '500':
+          description: Internal server error
+
   /subscriptions:
     post:
       summary: Create a new subscription

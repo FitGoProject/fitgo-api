@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const classSchema = new mongoose.Schema({
+const classSchema = new Schema({
   gymId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Gym',
     required: true
   },
@@ -16,6 +16,6 @@ const classSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-const Class = mongoose.model('Class', classSchema);
+const Class = model('Class', classSchema);
 
 module.exports = Class;
