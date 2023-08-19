@@ -114,8 +114,9 @@ exports.updateOption = async (req, res) => {
 
     res.status(200).json(option);
   } catch (error) {
+    console.error("Error in updateOption:", error); // Log the error for debugging
     res.status(500).json({ error: error.message });
-  }
+  }  
 };
 
 exports.deleteOption = async (req, res) => {

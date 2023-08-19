@@ -29,14 +29,23 @@ class OptionService {
   }
 
   async getOption(gymId, optionId) {
+    // First, find the gym to ensure it exists
     const gym = await Gym.findById(gymId);
-
     if (!gym) {
-      return null;
+      throw new Error('Gym not found');
     }
-
-    const option = gym.options.id(optionId);
-
+  
+    // Check if the gym has the specified option
+    if (!gym.options.includes(optionId)) {
+      throw new Error('Option not associated with the specified gym');
+    }
+  
+    // Retrieve the option from the Option collection
+    const option = await Option.findById(optionId);
+    if (!option) {
+      throw new Error('Option not found');
+    }
+  
     return option;
   }
 
