@@ -32,12 +32,12 @@ class OptionService {
     // First, find the gym to ensure it exists
     const gym = await Gym.findById(gymId);
     if (!gym) {
-      throw new Error('Gym not found');
+      return null;
     }
   
     // Check if the gym has the specified option
     if (!gym.options.includes(optionId)) {
-      throw new Error('Option not associated with the specified gym');
+      return null;
     }
   
     // Retrieve the option from the Option collection
