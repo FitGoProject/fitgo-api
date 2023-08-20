@@ -115,7 +115,7 @@ exports.updateOption = async (req, res) => {
     res.status(200).json(option);
   } catch (error) {
     res.status(500).json({ error: error.message });
-  }
+  }  
 };
 
 exports.deleteOption = async (req, res) => {
