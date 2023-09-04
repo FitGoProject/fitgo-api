@@ -19,10 +19,28 @@ exports.getClass = async (classId) => {
   }
 };
 
-exports.getClasses = async () => {
+exports.getClasses = async ({ page = 1, limit = 10 } = {}) => {
   try {
-    const classes = await Class.find();
-    return classes;
+    page = parseInt(page);
+    limit = parseInt(limit);
+    
+    if (!Number.isInteger(page) || !Number.isInteger(limit) || page < 1 || limit < 1) {
+      throw new Error('Invalid page or limit value');
+    }
+  
+    const totalClasses = await Class.countDocuments();
+    const totalPages = Math.ceil(totalClasses / limit);
+  
+    const classes = await Class.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
+    
+    return {
+      totalClasses,
+      totalPages,
+      currentPage: page,
+      classes
+    };
   } catch (error) {
     throw error;
   }

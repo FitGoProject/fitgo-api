@@ -25,8 +25,8 @@ exports.getClass = async (req, res) => {
 
 exports.getClasses = async (req, res) => {
   try {
-    const classes = await classService.getClasses();
-    res.status(200).json(classes);
+    const result = await classService.getClasses(req.query);
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

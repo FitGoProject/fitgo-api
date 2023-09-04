@@ -28,8 +28,9 @@ exports.login = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await userService.getAllUsers();
-    res.status(200).json(users);
+    const result = await userService.getAllUsers(req.query);
+
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

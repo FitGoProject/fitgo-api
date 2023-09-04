@@ -72,19 +72,20 @@ exports.createOption = async (req, res) => {
 
     res.status(201).json(option);
   } catch (error) {
+    console.error('Error:', error.message);
     res.status(500).json({ error: error.message });
-  }
+  }  
 };
 
 exports.getOptions = async (req, res) => {
   try {
-    const options = await optionService.getOptions(req.params.id);
+    const result = await optionService.getOptions(req.params.id, req.query);
 
-    if (!options) {
+    if (!result) {
       return res.status(404).json({ error: 'Gym not found' });
     }
 
-    res.status(200).json(options);
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

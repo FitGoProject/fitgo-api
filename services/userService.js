@@ -36,10 +36,28 @@ class UserService {
     return { user, token };
   }
 
-  async getAllUsers() {
-    const users = await User.find();
-    return users;
-  }
+  async getAllUsers({ page = 1, limit = 10 } = {}) {
+    page = parseInt(page);
+    limit = parseInt(limit);
+    
+    if (!Number.isInteger(page) || !Number.isInteger(limit) || page < 1 || limit < 1) {
+      throw new ValidationError('Invalid page or limit value');
+    }
+  
+    const totalUsers = await User.countDocuments();
+    const totalPages = Math.ceil(totalUsers / limit);
+  
+    const users = await User.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
+  
+    return {
+      totalUsers,
+      totalPages,
+      currentPage: page,
+      users
+    };
+  }  
 
   async getUserById(id) {
     const user = await User.findById(id);

@@ -10,8 +10,13 @@ exports.createSubscription = async (req, res) => {
 };
 
 exports.getAllSubscriptions = async (req, res) => {
-  const subscriptions = await subscriptionService.getAllSubscriptions();
-  res.status(200).json(subscriptions);
+  try {
+    const result = await subscriptionService.getAllSubscriptions(req.query);
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 exports.getSubscriptionById = async (req, res) => {
