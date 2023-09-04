@@ -21,8 +21,8 @@ exports.getAllGyms = async (req, res) => {
       return res.status(400).json({ error: 'Invalid page or limit value' });
     }
 
-    const result = await gymService.getAllGyms({ name, page, limit });
-    res.status(200).json(result);
+    const gyms = await gymService.getAllGyms({ name, page, limit });
+    res.status(200).json(gyms);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
