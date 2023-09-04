@@ -928,37 +928,6 @@ components:
           type: string
           format: date
           description: The end date of the subscription
-    Options:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the option
-        description:
-          type: string
-          description: The description of the option
-        months:
-          type: integer
-          description: The number of months the option covers
-        price:
-          type: number
-          description: The price of the option
-        classes:
-          type: array
-          items:
-            type: string
-            format: objectId
-          description: An array of class IDs included in the membership option
-        weekly:
-          type: integer
-          description: >-
-            The weekly limit of classes the user can attend with this
-            membership option
-        monthly:
-          type: integer
-          description: >-
-            The monthly limit of classes the user can attend with this
-            membership option
     Class:
       type: object
       properties:

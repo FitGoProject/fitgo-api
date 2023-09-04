@@ -28,9 +28,18 @@ exports.login = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const result = await userService.getAllUsers(req.query);
+    let { page = 1, limit = 10 } = req.query;
 
-    res.status(200).json(result);
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    if (!Number.isInteger(page) || !Number.isInteger(limit) || page < 1 || limit < 1) {
+      return res.status(400).json({ error: 'Invalid page or limit value' });
+    }
+
+    const users = await userService.getAllUsers({ page, limit });
+
+    res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

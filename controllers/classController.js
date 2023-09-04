@@ -25,8 +25,17 @@ exports.getClass = async (req, res) => {
 
 exports.getClasses = async (req, res) => {
   try {
-    const result = await classService.getClasses(req.query);
-    res.status(200).json(result);
+    let { page = 1, limit = 10 } = req.query;
+
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    if (!Number.isInteger(page) || !Number.isInteger(limit) || page < 1 || limit < 1) {
+      return res.status(400).json({ message: 'Invalid page or limit value' });
+    }
+
+    const classes = await classService.getClasses({ page, limit });
+    res.status(200).json(classes);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

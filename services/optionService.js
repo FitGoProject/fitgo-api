@@ -25,32 +25,29 @@ class OptionService {
   }  
 
   async getOptions(gymId, { page = 1, limit = 10 } = {}) {
-    const gym = await Gym.findById(gymId);
+    try {
+      const gym = await Gym.findById(gymId);
   
-    if (!gym) {
-      return null;
+      if (!gym) {
+        return null;
+      }
+  
+      const totalOptions = await Option.countDocuments({ _id: { $in: gym.options } });
+      const totalPages = Math.ceil(totalOptions / limit);
+  
+      const options = await Option.find({ _id: { $in: gym.options } })
+        .skip((page - 1) * limit)
+        .limit(limit);
+  
+      return {
+        totalOptions,
+        totalPages,
+        currentPage: page,
+        options
+      };
+    } catch (error) {
+      throw error;
     }
-  
-    page = parseInt(page);
-    limit = parseInt(limit);
-    
-    if (!Number.isInteger(page) || !Number.isInteger(limit) || page < 1 || limit < 1) {
-      throw new Error('Invalid page or limit value');
-    }
-  
-    const totalOptions = await Option.countDocuments({ _id: { $in: gym.options } });
-    const totalPages = Math.ceil(totalOptions / limit);
-  
-    const options = await Option.find({ _id: { $in: gym.options } })
-      .skip((page - 1) * limit)
-      .limit(limit);
-  
-    return {
-      totalOptions,
-      totalPages,
-      currentPage: page,
-      options
-    };
   }  
 
   async getOption(gymId, optionId) {
