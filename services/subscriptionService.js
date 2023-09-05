@@ -7,8 +7,25 @@ class SubscriptionService {
     return subscription;
   }
 
-  async getAllSubscriptions() {
-    return await Subscription.find().populate('userId gymId optionId');
+  async getAllSubscriptions({ page = 1, limit = 10 } = {}) {
+    try {
+      const totalSubscriptions = await Subscription.countDocuments();
+      const totalPages = Math.ceil(totalSubscriptions / limit);
+  
+      const subscriptions = await Subscription.find()
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .populate('userId gymId optionId');
+  
+      return {
+        totalSubscriptions,
+        totalPages,
+        currentPage: page,
+        subscriptions
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getSubscriptionById(id) {

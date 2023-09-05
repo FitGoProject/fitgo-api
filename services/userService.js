@@ -36,9 +36,24 @@ class UserService {
     return { user, token };
   }
 
-  async getAllUsers() {
-    const users = await User.find();
-    return users;
+  async getAllUsers({ page = 1, limit = 10 } = {}) {
+    try {
+      const totalUsers = await User.countDocuments();
+      const totalPages = Math.ceil(totalUsers / limit);
+  
+      const users = await User.find()
+        .skip((page - 1) * limit)
+        .limit(limit);
+  
+      return {
+        totalUsers,
+        totalPages,
+        currentPage: page,
+        users
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getUserById(id) {

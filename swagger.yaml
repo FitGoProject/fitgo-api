@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Rhino
+  title: Carpincho Gym Management API
   description: Gym Management API
   version: 1.0.0
 servers:
@@ -14,6 +14,8 @@ paths:
       summary: Register a new user
       tags:
         - Registration
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -45,57 +47,63 @@ paths:
                   type: array
                   items:
                     type: string
-                  description: 'The roles the user has (e.g., admin, member)'
+                  description: "The roles the user has (e.g., admin, member)"
       responses:
-        '201':
+        "201":
           description: User registered successfully
-        '400':
-          description: 'Bad request (e.g., missing or invalid fields)'
-        '500':
+        "400":
+          description: "Bad request (e.g., missing or invalid fields)"
+        "500":
           description: Internal server error
-  get:
-    summary: Retrieve a list of all users
-    tags:
-      - Users
-    security:
-      - BearerAuth: []
-    parameters:
-      - name: token
-        in: header
-        required: true
-        description: The JWT token for the authenticated user
-        schema:
-          type: string
-    responses:
-      '200':
-        description: List of users retrieved successfully
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
+  /users:
+    get:
+      summary: Retrieve all users
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Page number for pagination
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Number of records per page
+      responses:
+        "200":
+          description: Users retrieved successfully
+          content:
+            application/json:
+              schema:
                 type: object
                 properties:
-                  id:
+                  totalUsers:
                     type: integer
-                    description: The unique ID of the user
-                  email:
-                    type: string
-                    description: The email address of the user
-                  name:
-                    type: string
-                    description: The full name of the user
-      '400':
-        description: 'Bad request (e.g., missing or invalid fields)'
-      '401':
-        description: 'Unauthorized (e.g., invalid token)'
-      '500':
-        description: Internal server error
+                  totalPages:
+                    type: integer
+                  currentPage:
+                    type: integer
+                  users:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+        "400":
+          description: "Bad request (e.g., missing or invalid fields)"
+        "401":
+          description: "Unauthorized (e.g., invalid token)"
+        "500":
+          description: Internal server error
   /users/login:
     post:
       summary: Authenticate and login a user
       tags:
         - Authentication
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -110,7 +118,7 @@ paths:
                   type: string
                   description: The password for the user
       responses:
-        '200':
+        "200":
           description: User authenticated successfully
           content:
             application/json:
@@ -120,11 +128,11 @@ paths:
                   token:
                     type: string
                     description: The JWT token for the authenticated user
-        '400':
-          description: 'Bad request (e.g., missing or invalid fields)'
-        '401':
-          description: 'Unauthorized (e.g., invalid email or password)'
-        '500':
+        "400":
+          description: "Bad request (e.g., missing or invalid fields)"
+        "401":
+          description: "Unauthorized (e.g., invalid email or password)"
+        "500":
           description: Internal server error
   /gyms:
     post:
@@ -160,46 +168,12 @@ paths:
                     placeId:
                       type: string
                       description: The Google Maps place ID of the gym's location
-                options:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                        description: The name of the membership option
-                      description:
-                        type: string
-                        description: A description of the membership option
-                      months:
-                        type: integer
-                        description: The number of months the option covers
-                      price:
-                        type: number
-                        description: The price of the membership option
-                      classes:
-                        type: array
-                        items:
-                          type: string
-                        description: >-
-                          An array of class IDs included in the membership
-                          option
-                      weekly:
-                        type: integer
-                        description: >-
-                          The weekly limit of classes the user can attend with
-                          this membership option
-                      monthly:
-                        type: integer
-                        description: >-
-                          The monthly limit of classes the user can attend with
-                          this membership option
       responses:
-        '201':
+        "201":
           description: Gym created successfully
-        '400':
-          description: 'Bad request (e.g., missing or invalid fields)'
-        '500':
+        "400":
+          description: "Bad request (e.g., missing or invalid fields)"
+        "500":
           description: Internal server error
     get:
       summary: Retrieve all gyms
@@ -224,7 +198,7 @@ paths:
             type: integer
           description: Number of records per page
       responses:
-        '200':
+        "200":
           description: Gyms retrieved successfully
           content:
             application/json:
@@ -240,10 +214,10 @@ paths:
                   gyms:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Gym'
-        '500':
+                      $ref: "#/components/schemas/Gym"
+        "500":
           description: Internal server error
-  '/gyms/{id}':
+  /gyms/{id}:
     get:
       summary: Retrieve a specific gym
       tags:
@@ -258,15 +232,15 @@ paths:
           required: true
           description: The ID of the gym to retrieve
       responses:
-        '200':
+        "200":
           description: Gym retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Gym'
-        '404':
+                $ref: "#/components/schemas/Gym"
+        "404":
           description: Gym not found
-        '500':
+        "500":
           description: Internal server error
     put:
       summary: Update a specific gym
@@ -343,15 +317,15 @@ paths:
                           The monthly limit of classes the user can attend with
                           this membership option
       responses:
-        '200':
+        "200":
           description: Gym updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Gym'
-        '404':
+                $ref: "#/components/schemas/Gym"
+        "404":
           description: Gym not found
-        '500':
+        "500":
           description: Internal server error
     delete:
       summary: Delete a specific gym
@@ -367,17 +341,19 @@ paths:
           required: true
           description: The ID of the gym to delete
       responses:
-        '200':
+        "200":
           description: Gym deleted successfully
-        '404':
+        "404":
           description: Gym not found
-        '500':
+        "500":
           description: Internal server error
   /gyms/{gymId}/options:
     post:
       summary: Create a new option for a gym
       tags:
-        - Gyms
+        - Options
+      security:
+        - bearerAuth: []
       parameters:
         - name: gymId
           in: path
@@ -405,16 +381,18 @@ paths:
                   type: number
                   description: The duration of the option in days
       responses:
-        '201':
+        "201":
           description: Option created successfully
-        '404':
+        "404":
           description: Gym not found
-        '500':
+        "500":
           description: Internal server error
     get:
       summary: Get all options for a gym
       tags:
-        - Gyms
+        - Options
+      security:
+        - bearerAuth: []
       parameters:
         - name: gymId
           in: path
@@ -422,25 +400,36 @@ paths:
           description: The ID of the gym
           schema:
             type: string
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Page number for pagination
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Number of records per page
       responses:
-        '200':
+        "200":
           description: List of options retrieved successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Option'
-        '404':
+                  $ref: "#/components/schemas/Option"
+        "404":
           description: Gym not found
-        '500':
+        "500":
           description: Internal server error
-
   /gyms/{gymId}/options/{optionId}:
     get:
       summary: Get a specific option for a gym
       tags:
-        - Gyms
+        - Options
+      security:
+        - bearerAuth: []
       parameters:
         - name: gymId
           in: path
@@ -455,20 +444,22 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Option retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Option'
-        '404':
+                $ref: "#/components/schemas/Option"
+        "404":
           description: Option not found
-        '500':
+        "500":
           description: Internal server error
     put:
       summary: Update a specific option for a gym
       tags:
-        - Gyms
+        - Options
+      security:
+        - bearerAuth: []
       parameters:
         - name: gymId
           in: path
@@ -487,18 +478,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Option'
+              $ref: "#/components/schemas/Option"
       responses:
-        '200':
+        "200":
           description: Option updated successfully
-        '404':
+        "404":
           description: Option not found
-        '500':
+        "500":
           description: Internal server error
     delete:
       summary: Delete a specific option for a gym
       tags:
-        - Gyms
+        - Options
+      security:
+        - bearerAuth: []
       parameters:
         - name: gymId
           in: path
@@ -513,13 +506,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Option deleted successfully
-        '404':
+        "404":
           description: Option not found
-        '500':
+        "500":
           description: Internal server error
-
   /subscriptions:
     post:
       summary: Create a new subscription
@@ -555,11 +547,11 @@ paths:
                   format: date
                   description: The end date of the subscription
       responses:
-        '201':
+        "201":
           description: Subscription created successfully
-        '400':
-          description: 'Bad request (e.g., missing or invalid fields)'
-        '500':
+        "400":
+          description: "Bad request (e.g., missing or invalid fields)"
+        "500":
           description: Internal server error
     get:
       summary: Retrieve all subscriptions
@@ -567,18 +559,38 @@ paths:
         - Subscriptions
       security:
         - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Page number for pagination
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Number of records per page
       responses:
-        '200':
+        "200":
           description: Subscriptions retrieved successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Subscription'
-        '500':
+                type: object
+                properties:
+                  totalSubscriptions:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  currentPage:
+                    type: integer
+                  subscriptions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Subscription"
+        "500":
           description: Internal server error
-  '/subscriptions/{id}':
+  /subscriptions/{id}:
     get:
       summary: Retrieve a specific subscription
       tags:
@@ -593,15 +605,15 @@ paths:
           required: true
           description: The ID of the subscription to retrieve
       responses:
-        '200':
+        "200":
           description: Subscription retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Subscription'
-        '404':
+                $ref: "#/components/schemas/Subscription"
+        "404":
           description: Subscription not found
-        '500':
+        "500":
           description: Internal server error
     put:
       summary: Update a specific subscription
@@ -644,15 +656,15 @@ paths:
                   format: date
                   description: The end date of the subscription
       responses:
-        '200':
+        "200":
           description: Subscription updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Subscription'
-        '404':
+                $ref: "#/components/schemas/Subscription"
+        "404":
           description: Subscription not found
-        '500':
+        "500":
           description: Internal server error
     delete:
       summary: Delete a specific subscription
@@ -668,11 +680,11 @@ paths:
           required: true
           description: The ID of the subscription to delete
       responses:
-        '200':
+        "200":
           description: Subscription deleted successfully
-        '404':
+        "404":
           description: Subscription not found
-        '500':
+        "500":
           description: Internal server error
   /classes:
     get:
@@ -681,16 +693,27 @@ paths:
         - Classes
       security:
         - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Page number for pagination
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Number of records per page
       responses:
-        '200':
+        "200":
           description: Classes retrieved successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Class'
-        '500':
+                  $ref: "#/components/schemas/Class"
+        "500":
           description: Internal server error
     post:
       summary: Create a new class
@@ -703,17 +726,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Class'
+              $ref: "#/components/schemas/Class"
       responses:
-        '201':
+        "201":
           description: Class created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Class'
-        '500':
+                $ref: "#/components/schemas/Class"
+        "500":
           description: Internal server error
-  '/classes/{id}':
+  /classes/{id}:
     get:
       summary: Retrieve a specific class
       tags:
@@ -728,15 +751,15 @@ paths:
           required: true
           description: The ID of the class to retrieve
       responses:
-        '200':
+        "200":
           description: Class retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Class'
-        '404':
+                $ref: "#/components/schemas/Class"
+        "404":
           description: Class not found
-        '500':
+        "500":
           description: Internal server error
     put:
       summary: Update a specific class
@@ -756,17 +779,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Class'
+              $ref: "#/components/schemas/Class"
       responses:
-        '200':
+        "200":
           description: Class updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Class'
-        '404':
+                $ref: "#/components/schemas/Class"
+        "404":
           description: Class not found
-        '500':
+        "500":
           description: Internal server error
     delete:
       summary: Delete a specific class
@@ -782,13 +805,12 @@ paths:
           required: true
           description: The ID of the class to delete
       responses:
-        '200':
+        "200":
           description: Class deleted successfully
-        '404':
+        "404":
           description: Class not found
-        '500':
+        "500":
           description: Internal server error
-
 components:
   securitySchemes:
     bearerAuth:
@@ -853,7 +875,7 @@ components:
           type: array
           items:
             type: string
-          description: 'The roles the user has (e.g., admin, member)'
+          description: "The roles the user has (e.g., admin, member)"
     Gym:
       type: object
       properties:
@@ -880,38 +902,6 @@ components:
             placeId:
               type: string
               description: The Google Maps place ID of the gym's location
-        options:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-                description: The name of the membership option
-              description:
-                type: string
-                description: A description of the membership option
-              months:
-                type: integer
-                description: The number of months the option covers
-              price:
-                type: number
-                description: The price of the membership option
-              classes:
-                type: array
-                items:
-                  type: string
-                description: An array of class IDs included in the membership option
-              weekly:
-                type: integer
-                description: >-
-                  The weekly limit of classes the user can attend with this
-                  membership option
-              monthly:
-                type: integer
-                description: >-
-                  The monthly limit of classes the user can attend with this
-                  membership option
     Subscription:
       type: object
       properties:

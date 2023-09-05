@@ -19,14 +19,26 @@ exports.getClass = async (classId) => {
   }
 };
 
-exports.getClasses = async () => {
+exports.getClasses = async ({ page = 1, limit = 10 } = {}) => {
   try {
-    const classes = await Class.find();
-    return classes;
+    const totalClasses = await Class.countDocuments();
+    const totalPages = Math.ceil(totalClasses / limit);
+  
+    const classes = await Class.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
+    
+    return {
+      totalClasses,
+      totalPages,
+      currentPage: page,
+      classes
+    };
   } catch (error) {
     throw error;
   }
 };
+
 
 exports.updateClass = async (classId, classData) => {
   try {

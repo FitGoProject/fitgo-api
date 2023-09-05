@@ -12,8 +12,17 @@ exports.createGym = async (req, res) => {
 
 exports.getAllGyms = async (req, res) => {
   try {
-    const result = await gymService.getAllGyms(req.query);
-    res.status(200).json(result);
+    let { name = '', page = 1, limit = 10 } = req.query;
+
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    if (!Number.isInteger(page) || !Number.isInteger(limit) || page < 1 || limit < 1) {
+      return res.status(400).json({ error: 'Invalid page or limit value' });
+    }
+
+    const gyms = await gymService.getAllGyms({ name, page, limit });
+    res.status(200).json(gyms);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -72,13 +81,14 @@ exports.createOption = async (req, res) => {
 
     res.status(201).json(option);
   } catch (error) {
+    console.error('Error:', error.message);
     res.status(500).json({ error: error.message });
-  }
+  }  
 };
 
 exports.getOptions = async (req, res) => {
   try {
-    const options = await optionService.getOptions(req.params.id);
+    const options = await optionService.getOptions(req.params.id, req.query);
 
     if (!options) {
       return res.status(404).json({ error: 'Gym not found' });

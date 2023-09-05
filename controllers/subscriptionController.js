@@ -10,8 +10,22 @@ exports.createSubscription = async (req, res) => {
 };
 
 exports.getAllSubscriptions = async (req, res) => {
-  const subscriptions = await subscriptionService.getAllSubscriptions();
-  res.status(200).json(subscriptions);
+  try {
+    let { page = 1, limit = 10 } = req.query;
+
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    if (!Number.isInteger(page) || !Number.isInteger(limit) || page < 1 || limit < 1) {
+      return res.status(400).json({ error: 'Invalid page or limit value' });
+    }
+
+    const subscriptions = await subscriptionService.getAllSubscriptions({ page, limit });
+
+    res.status(200).json(subscriptions);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 exports.getSubscriptionById = async (req, res) => {
