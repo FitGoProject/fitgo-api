@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const optionSchema = new Schema({
+const planSchema = new Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     months: { type: Number },
@@ -10,4 +10,4 @@ const optionSchema = new Schema({
     monthly: { type: Number },
   });
   
-module.exports = model('Option', optionSchema);
+module.exports = model('Plan', planSchema);

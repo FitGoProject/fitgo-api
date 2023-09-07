@@ -11,9 +11,9 @@ const subscriptionSchema = new Schema({
     ref: 'Gym',
     required: true,
   },
-  optionId: {
+  planId: {
     type: Schema.Types.ObjectId,
-    ref: 'Option',
+    ref: 'Plan',
     required: true,
   },
   total: {

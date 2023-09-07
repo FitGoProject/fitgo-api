@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const SubscriptionSchema = new Schema({
   _id: Schema.Types.ObjectId,
   gym: { type: Schema.Types.ObjectId, ref: 'Gym' },
-  option: { type: Schema.Types.ObjectId, ref: 'Option' },
+  plan: { type: Schema.Types.ObjectId, ref: 'Plan' },
   total: Number,
   startDate: Date,
   endDate: Date,
