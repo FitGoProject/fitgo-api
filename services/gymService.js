@@ -9,31 +9,34 @@ class GymService {
   }
 
   async getAllGyms({ name = '', page = 1, limit = 10 } = {}) {
-    try {
-      const filter = {};
-      if (name) {
-        filter.name = { $regex: new RegExp(name, 'i') };
-      }
+    page = parseInt(page);
+    limit = parseInt(limit);
   
-      const totalGyms = await Gym.countDocuments(filter);
-      const totalPages = Math.ceil(totalGyms / limit);
-  
-      const gyms = await Gym.find(filter)
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .populate('admins', 'name lastName email')
-        .populate('members.user', 'name lastName email');
-  
-      return {
-        totalGyms,
-        totalPages,
-        currentPage: page,
-        gyms
-      };
-    } catch (error) {
-      throw error;
+    if (!Number.isInteger(page) || !Number.isInteger(limit) || page < 1 || limit < 1) {
+      throw new Error('Invalid page or limit value');
     }
-  }  
+  
+    const filter = {};
+    if (name) {
+      filter.name = { $regex: new RegExp(name, 'i') };
+    }
+  
+    const totalGyms = await Gym.countDocuments(filter);
+    const totalPages = Math.ceil(totalGyms / limit);
+  
+    const gyms = await Gym.find(filter)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate('admins', 'name lastName email')
+      .populate('members.user', 'name lastName email');
+  
+    return {
+      totalGyms,
+      totalPages,
+      currentPage: page,
+      gyms
+    };
+  }    
   
   async getGymById(id) {
     const gym = await Gym.findById(id).populate('admins', 'name lastName email').populate('members.user', 'name lastName email');

@@ -15,7 +15,7 @@ class SubscriptionService {
       const subscriptions = await Subscription.find()
         .skip((page - 1) * limit)
         .limit(limit)
-        .populate('userId gymId optionId');
+        .populate('userId gymId planId');
   
       return {
         totalSubscriptions,
@@ -29,7 +29,7 @@ class SubscriptionService {
   }
 
   async getSubscriptionById(id) {
-    return await Subscription.findById(id).populate('userId gymId optionId');
+    return await Subscription.findById(id).populate('userId gymId planId');
   }
 
   async updateSubscription(id, subscriptionData) {

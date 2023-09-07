@@ -282,40 +282,40 @@ paths:
                     placeId:
                       type: string
                       description: The Google Maps place ID of the gym's location
-                options:
+                plans:
                   type: array
                   items:
                     type: object
                     properties:
                       name:
                         type: string
-                        description: The name of the membership option
+                        description: The name of the membership plan
                       description:
                         type: string
-                        description: A description of the membership option
+                        description: A description of the membership plan
                       months:
                         type: integer
-                        description: The number of months the option covers
+                        description: The number of months the plan covers
                       price:
                         type: number
-                        description: The price of the membership option
+                        description: The price of the membership plan
                       classes:
                         type: array
                         items:
                           type: string
                         description: >-
                           An array of class IDs included in the membership
-                          option
+                          plan
                       weekly:
                         type: integer
                         description: >-
                           The weekly limit of classes the user can attend with
-                          this membership option
+                          this membership plan
                       monthly:
                         type: integer
                         description: >-
                           The monthly limit of classes the user can attend with
-                          this membership option
+                          this membership plan
       responses:
         "200":
           description: Gym updated successfully
@@ -347,11 +347,11 @@ paths:
           description: Gym not found
         "500":
           description: Internal server error
-  /gyms/{gymId}/options:
+  /gyms/{gymId}/plans:
     post:
-      summary: Create a new option for a gym
+      summary: Create a new plan for a gym
       tags:
-        - Options
+        - Plans
       security:
         - bearerAuth: []
       parameters:
@@ -370,27 +370,27 @@ paths:
               properties:
                 name:
                   type: string
-                  description: The name of the option
+                  description: The name of the plan
                 description:
                   type: string
-                  description: The description of the option
+                  description: The description of the plan
                 price:
                   type: number
-                  description: The price of the option
+                  description: The price of the plan
                 duration:
                   type: number
-                  description: The duration of the option in days
+                  description: The duration of the plan in days
       responses:
         "201":
-          description: Option created successfully
+          description: Plan created successfully
         "404":
           description: Gym not found
         "500":
           description: Internal server error
     get:
-      summary: Get all options for a gym
+      summary: Get all plans for a gym
       tags:
-        - Options
+        - Plans
       security:
         - bearerAuth: []
       parameters:
@@ -412,22 +412,22 @@ paths:
           description: Number of records per page
       responses:
         "200":
-          description: List of options retrieved successfully
+          description: List of plans retrieved successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Option"
+                  $ref: "#/components/schemas/Plan"
         "404":
           description: Gym not found
         "500":
           description: Internal server error
-  /gyms/{gymId}/options/{optionId}:
+  /gyms/{gymId}/plans/{planId}:
     get:
-      summary: Get a specific option for a gym
+      summary: Get a specific plan for a gym
       tags:
-        - Options
+        - Plans
       security:
         - bearerAuth: []
       parameters:
@@ -437,27 +437,27 @@ paths:
           description: The ID of the gym
           schema:
             type: string
-        - name: optionId
+        - name: planId
           in: path
           required: true
-          description: The ID of the option
+          description: The ID of the plan
           schema:
             type: string
       responses:
         "200":
-          description: Option retrieved successfully
+          description: Plan retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Option"
+                $ref: "#/components/schemas/Plan"
         "404":
-          description: Option not found
+          description: Plan not found
         "500":
           description: Internal server error
     put:
-      summary: Update a specific option for a gym
+      summary: Update a specific plan for a gym
       tags:
-        - Options
+        - Plans
       security:
         - bearerAuth: []
       parameters:
@@ -467,10 +467,10 @@ paths:
           description: The ID of the gym
           schema:
             type: string
-        - name: optionId
+        - name: planId
           in: path
           required: true
-          description: The ID of the option
+          description: The ID of the plan
           schema:
             type: string
       requestBody:
@@ -478,18 +478,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Option"
+              $ref: "#/components/schemas/Plan"
       responses:
         "200":
-          description: Option updated successfully
+          description: Plan updated successfully
         "404":
-          description: Option not found
+          description: Plan not found
         "500":
           description: Internal server error
     delete:
-      summary: Delete a specific option for a gym
+      summary: Delete a specific plan for a gym
       tags:
-        - Options
+        - Plans
       security:
         - bearerAuth: []
       parameters:
@@ -499,17 +499,17 @@ paths:
           description: The ID of the gym
           schema:
             type: string
-        - name: optionId
+        - name: planId
           in: path
           required: true
-          description: The ID of the option
+          description: The ID of the plan
           schema:
             type: string
       responses:
         "200":
-          description: Option deleted successfully
+          description: Plan deleted successfully
         "404":
-          description: Option not found
+          description: Plan not found
         "500":
           description: Internal server error
   /subscriptions:
@@ -532,9 +532,9 @@ paths:
                 gymId:
                   type: string
                   description: The ID of the gym this subscription is for
-                optionId:
+                planId:
                   type: string
-                  description: The ID of the membership option for this subscription
+                  description: The ID of the membership plan for this subscription
                 total:
                   type: number
                   description: The total amount paid for this subscription
@@ -641,9 +641,9 @@ paths:
                 gymId:
                   type: string
                   description: The ID of the gym this subscription is for
-                optionId:
+                planId:
                   type: string
-                  description: The ID of the membership option for this subscription
+                  description: The ID of the membership plan for this subscription
                 total:
                   type: number
                   description: The total amount paid for this subscription
@@ -818,33 +818,33 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    Option:
+    Plan:
       type: object
       properties:
         name:
           type: string
-          description: The name of the option
+          description: The name of the plan
         description:
           type: string
-          description: The description of the option
+          description: The description of the plan
         months:
           type: number
-          description: The number of months the option covers
+          description: The number of months the plan covers
         price:
           type: number
-          description: The price of the option
+          description: The price of the plan
         classes:
           type: array
           items:
             type: string
             format: objectId
-          description: An array of class IDs included in the membership option
+          description: An array of class IDs included in the membership plan
         weekly:
           type: number
-          description: The weekly limit of classes the user can attend with this membership option
+          description: The weekly limit of classes the user can attend with this membership plan
         monthly:
           type: number
-          description: The monthly limit of classes the user can attend with this membership option
+          description: The monthly limit of classes the user can attend with this membership plan
       required:
         - name
         - description
@@ -914,9 +914,9 @@ components:
         gymId:
           type: string
           description: The ID of the gym this subscription is for
-        optionId:
+        planId:
           type: string
-          description: The ID of the membership option for this subscription
+          description: The ID of the membership plan for this subscription
         total:
           type: number
           description: The total amount paid for this subscription

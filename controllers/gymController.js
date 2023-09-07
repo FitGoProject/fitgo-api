@@ -1,5 +1,5 @@
 const gymService = require('../services/gymService');
-const optionService = require('../services/optionService');
+const planService = require('../services/planService');
 
 exports.createGym = async (req, res) => {
   try {
@@ -70,73 +70,73 @@ exports.deleteGym = async (req, res) => {
   }
 };
 
-// Options
-exports.createOption = async (req, res) => {
+// Plans
+exports.createPlan = async (req, res) => {
   try {
-    const option = await optionService.createOption(req.params.id, req.body);
+    const plan = await planService.createPlan(req.params.id, req.body);
 
-    if (!option) {
+    if (!plan) {
       return res.status(404).json({ error: 'Gym not found' });
     }
 
-    res.status(201).json(option);
+    res.status(201).json(plan);
   } catch (error) {
     console.error('Error:', error.message);
     res.status(500).json({ error: error.message });
   }  
 };
 
-exports.getOptions = async (req, res) => {
+exports.getPlans = async (req, res) => {
   try {
-    const options = await optionService.getOptions(req.params.id, req.query);
+    const plans = await planService.getPlans(req.params.id, req.query);
 
-    if (!options) {
+    if (!plans) {
       return res.status(404).json({ error: 'Gym not found' });
     }
 
-    res.status(200).json(options);
+    res.status(200).json(plans);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-exports.getOption = async (req, res) => {
+exports.getPlan = async (req, res) => {
   try {
-    const option = await optionService.getOption(req.params.id, req.params.optionId);
+    const plan = await planService.getPlan(req.params.id, req.params.planId);
 
-    if (!option) {
-      return res.status(404).json({ error: 'Option not found' });
+    if (!plan) {
+      return res.status(404).json({ error: 'Plan not found' });
     }
 
-    res.status(200).json(option);
+    res.status(200).json(plan);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-exports.updateOption = async (req, res) => {
+exports.updatePlan = async (req, res) => {
   try {
-    const option = await optionService.updateOption(req.params.optionId, req.body);
+    const plan = await planService.updatePlan(req.params.planId, req.body);
 
-    if (!option) {
-      return res.status(404).json({ error: 'Option not found' });
+    if (!plan) {
+      return res.status(404).json({ error: 'Plan not found' });
     }
 
-    res.status(200).json(option);
+    res.status(200).json(plan);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }  
 };
 
-exports.deleteOption = async (req, res) => {
+exports.deletePlan = async (req, res) => {
   try {
-    const option = await optionService.deleteOption(req.params.id, req.params.optionId);
+    const plan = await planService.deletePlan(req.params.id, req.params.planId);
 
-    if (!option) {
-      return res.status(404).json({ error: 'Option not found' });
+    if (!plan) {
+      return res.status(404).json({ error: 'Plan not found' });
     }
 
-    res.status(200).json({ message: 'Option deleted successfully' });
+    res.status(200).json({ message: 'Plan deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
